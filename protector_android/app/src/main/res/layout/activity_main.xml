@@ -84,7 +84,7 @@
                 android:layout_marginTop="6dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Find stock fast • Filter smart • Share a clean card"
+                android:text="Entries save on this phone • Search • Share cards"
                 android:textColor="#B7E4DF"
                 android:textSize="13sp" />
 

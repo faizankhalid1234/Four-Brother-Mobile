@@ -3,17 +3,96 @@ package com.fourbrothers.protector
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.util.UUID
 
+/**
+ * Saves all protectors + mobile models on the user's phone storage.
+ * Primary: app private internal files (survives app updates).
+ * Mirror: app-specific external folder when available.
+ * Also migrates any older SharedPreferences data once.
+ */
 class StorageRepository(context: Context) {
-    private val prefs = context.getSharedPreferences("protector_app", Context.MODE_PRIVATE)
+    private val appContext = context.applicationContext
+    private val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val internalFile = File(appContext.filesDir, DATA_FILE_NAME)
 
     enum class SearchFilter { BOTH, PROTECTOR, MODEL }
 
-    fun loadProtectors(): MutableList<Protector> {
-        val raw = prefs.getString(KEY_PROTECTORS, null) ?: return mutableListOf()
+    private fun externalMirrorFile(): File? {
+        val dir = appContext.getExternalFilesDir(null) ?: return null
+        if (!dir.exists()) dir.mkdirs()
+        return File(dir, DATA_FILE_NAME)
+    }
+
+    private fun readJsonFile(file: File): JSONObject? {
+        if (!file.exists() || file.length() == 0L) return null
         return try {
-            val arr = JSONArray(raw)
+            JSONObject(file.readText(Charsets.UTF_8))
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun loadRoot(): JSONObject {
+        readJsonFile(internalFile)?.let { return it }
+        externalMirrorFile()?.let { mirror ->
+            readJsonFile(mirror)?.let { json ->
+                writeRoot(json)
+                return json
+            }
+        }
+        // Migrate old SharedPreferences (if any) onto phone file storage.
+        val migrated = migrateFromPrefsIfNeeded()
+        if (migrated != null) return migrated
+        return JSONObject()
+            .put(KEY_PROTECTORS, JSONArray())
+            .put(KEY_MODELS, JSONArray())
+    }
+
+    private fun migrateFromPrefsIfNeeded(): JSONObject? {
+        val protectorsRaw = prefs.getString(KEY_PROTECTORS, null)
+        val modelsRaw = prefs.getString(KEY_MODELS, null)
+        if (protectorsRaw.isNullOrBlank() && modelsRaw.isNullOrBlank()) return null
+        val root = JSONObject()
+            .put(KEY_PROTECTORS, try { JSONArray(protectorsRaw ?: "[]") } catch (_: Exception) { JSONArray() })
+            .put(KEY_MODELS, try { JSONArray(modelsRaw ?: "[]") } catch (_: Exception) { JSONArray() })
+        writeRoot(root)
+        prefs.edit().remove(KEY_PROTECTORS).remove(KEY_MODELS).apply()
+        return root
+    }
+
+    private fun writeRoot(root: JSONObject) {
+        val text = root.toString()
+        // Atomic-ish write to internal phone storage
+        val tmp = File(appContext.filesDir, "$DATA_FILE_NAME.tmp")
+        tmp.writeText(text, Charsets.UTF_8)
+        if (!tmp.renameTo(internalFile)) {
+            internalFile.writeText(text, Charsets.UTF_8)
+            tmp.delete()
+        }
+        // Mirror copy on external app storage (still this phone, survives clearer storage browsability)
+        try {
+            externalMirrorFile()?.writeText(text, Charsets.UTF_8)
+        } catch (_: Exception) {
+            // External may be unavailable; internal is enough.
+        }
+        // Keep a light prefs flag so we know phone storage is active
+        prefs.edit().putBoolean(KEY_FILE_STORAGE, true).apply()
+    }
+
+    fun storageLocationHint(): String {
+        val external = externalMirrorFile()?.absolutePath
+        return if (external != null) {
+            "Saved on this phone\n$external"
+        } else {
+            "Saved on this phone\n${internalFile.absolutePath}"
+        }
+    }
+
+    fun loadProtectors(): MutableList<Protector> {
+        val arr = loadRoot().optJSONArray(KEY_PROTECTORS) ?: JSONArray()
+        return try {
             MutableList(arr.length()) { i ->
                 val o = arr.getJSONObject(i)
                 val models = o.optJSONArray("mobileModels") ?: JSONArray()
@@ -29,6 +108,7 @@ class StorageRepository(context: Context) {
     }
 
     fun saveProtectors(list: List<Protector>) {
+        val root = loadRoot()
         val arr = JSONArray()
         list.forEach { p ->
             arr.put(
@@ -38,13 +118,13 @@ class StorageRepository(context: Context) {
                     .put("mobileModels", JSONArray(p.mobileModels))
             )
         }
-        prefs.edit().putString(KEY_PROTECTORS, arr.toString()).apply()
+        root.put(KEY_PROTECTORS, arr)
+        writeRoot(root)
     }
 
     fun loadMobileModels(): MutableList<MobileModel> {
-        val raw = prefs.getString(KEY_MODELS, null) ?: return mutableListOf()
+        val arr = loadRoot().optJSONArray(KEY_MODELS) ?: JSONArray()
         return try {
-            val arr = JSONArray(raw)
             MutableList(arr.length()) { i ->
                 val o = arr.getJSONObject(i)
                 MobileModel(o.getString("id"), o.getString("name"))
@@ -55,11 +135,13 @@ class StorageRepository(context: Context) {
     }
 
     fun saveMobileModels(list: List<MobileModel>) {
+        val root = loadRoot()
         val arr = JSONArray()
         list.forEach { m ->
             arr.put(JSONObject().put("id", m.id).put("name", m.name))
         }
-        prefs.edit().putString(KEY_MODELS, arr.toString()).apply()
+        root.put(KEY_MODELS, arr)
+        writeRoot(root)
     }
 
     fun ensureMobileModel(raw: String): String {
@@ -200,7 +282,10 @@ class StorageRepository(context: Context) {
     }
 
     companion object {
+        private const val PREFS_NAME = "protector_app"
+        private const val DATA_FILE_NAME = "four_brothers_data.json"
         private const val KEY_PROTECTORS = "protectors"
         private const val KEY_MODELS = "mobile_models"
+        private const val KEY_FILE_STORAGE = "using_phone_file_storage"
     }
 }

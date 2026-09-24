@@ -121,7 +121,7 @@ class FormActivity : AppCompatActivity() {
             }
             Toast.makeText(
                 this,
-                if (editId == null) "Protector saved" else "Protector updated",
+                if (editId == null) "Saved on this phone" else "Updated on this phone",
                 Toast.LENGTH_SHORT
             ).show()
             finish()
