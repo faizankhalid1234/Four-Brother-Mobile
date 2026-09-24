@@ -24,10 +24,8 @@ cd protector_android
 ./gradlew assembleDebug
 ```
 
-Debug APK output (when using external build dir):
-
-`C:\AndroidTools\builds\protector_android\app\outputs\apk\debug\app-debug.apk`
-
 ## Note
 
 `protector_app` contains an earlier Flutter prototype. The shipping app is **protector_android**.
+
+Private machine/security notes are kept locally in `RAKHNA.md` (not published).
