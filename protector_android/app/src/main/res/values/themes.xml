@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="teal">#0F766E</color>
+    <color name="teal_dark">#0B5C56</color>
+    <color name="teal_soft">#E6F5F3</color>
+    <color name="bg">#EEF3F7</color>
+    <color name="ink">#0B1220</color>
+    <color name="muted">#64748B</color>
+    <color name="card_stroke">#DCE5EE</color>
+    <color name="teal_mid">#14B8A6</color>
+    <string name="app_name">FOUR BROTHERS</string>
+    <style name="Theme.ProtectorApp" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/teal</item>
+        <item name="colorPrimaryContainer">@color/teal_soft</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="android:statusBarColor">@color/teal_dark</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+</resources>

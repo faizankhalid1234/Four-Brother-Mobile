@@ -1,0 +1,6 @@
+.gradle/
+/local.properties
+/**/GeneratedPluginRegistrant.java
+key.properties
+**/*.keystore
+**/*.jks

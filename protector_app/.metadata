@@ -1,0 +1,6 @@
+# Generated file — do not edit.
+version:
+  revision: "manual"
+  channel: "stable"
+
+project_type: app

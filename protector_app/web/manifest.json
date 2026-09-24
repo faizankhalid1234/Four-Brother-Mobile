@@ -1,0 +1,11 @@
+{
+  "name": "Protector Management",
+  "short_name": "Protectors",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F4F7FB",
+  "theme_color": "#0F766E",
+  "description": "Local protector and mobile model manager",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}

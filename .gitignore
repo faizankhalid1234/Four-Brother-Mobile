@@ -1,0 +1,39 @@
+# Android / Gradle
+.gradle/
+**/build/
+local.properties
+*.iml
+.idea/
+*.apk
+*.aab
+*.ap_
+captures/
+.externalNativeBuild/
+.cxx/
+*.keystore
+*.jks
+
+# Flutter
+protector_app/.dart_tool/
+protector_app/.flutter-plugins
+protector_app/.flutter-plugins-dependencies
+protector_app/.packages
+protector_app/.pub-cache/
+protector_app/.pub/
+protector_app/build/
+protector_app/.android/
+protector_app/.ios/
+**/Generated.xcconfig
+**/flutter_export_environment.sh
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+.vscode/
+.cursor/
+
+# Secrets
+.env
+*.pem
