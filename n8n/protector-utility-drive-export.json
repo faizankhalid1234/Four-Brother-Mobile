@@ -1,0 +1,474 @@
+{
+  "name": "Fine Trade — Drive Export",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "protector-utility-export",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-export",
+      "name": "Webhook Export",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "protector-utility-export"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.uid || $json.uid }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "if-has-uid",
+      "name": "Has UID?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "uid",
+              "name": "uid",
+              "value": "={{ $json.body.uid || $json.uid }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{ $json.body.email || $json.email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "folderName",
+              "name": "folderName",
+              "value": "={{ $json.body.folderName || $json.folderName || 'Fine Trade' }}",
+              "type": "string"
+            },
+            {
+              "id": "fileName",
+              "name": "fileName",
+              "value": "={{ $json.body.fileName || $json.fileName || 'fine_trade_data.json' }}",
+              "type": "string"
+            },
+            {
+              "id": "data",
+              "name": "data",
+              "value": "={{ $json.body.data || $json.data }}",
+              "type": "object"
+            },
+            {
+              "id": "userFolderName",
+              "name": "userFolderName",
+              "value": "={{ ($json.body.email || $json.email || 'user').toString().trim().toLowerCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-fields",
+      "name": "Normalize Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, -40]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "={{ \"name = '\" + $json.folderName.replace(/'/g, \"\\\\'\") + \"' and mimeType = 'application/vnd.google-apps.folder' and trashed = false\" }}",
+        "filter": {
+          "whatToSearch": "folders"
+        },
+        "options": {
+          "fields": ["id", "name"]
+        }
+      },
+      "id": "search-root-folder",
+      "name": "Search Root Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [720, -40],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $items.length }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "if-root-exists",
+      "name": "Root Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [960, -40]
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "operation": "create",
+        "name": "={{ $('Normalize Payload').item.json.folderName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "create-root-folder",
+      "name": "Create Root Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1200, 80],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "rootId",
+              "name": "rootFolderId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "set-root-id",
+      "name": "Set Root Id",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1440, -40]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "={{ \"name = '\" + $('Normalize Payload').item.json.userFolderName.replace(/'/g, \"\\\\'\") + \"' and mimeType = 'application/vnd.google-apps.folder' and '\" + $json.rootFolderId + \"' in parents and trashed = false\" }}",
+        "filter": {
+          "whatToSearch": "folders"
+        },
+        "options": {
+          "fields": ["id", "name"]
+        }
+      },
+      "id": "search-user-folder",
+      "name": "Search User Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1680, -40],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $items.length }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "if-user-exists",
+      "name": "User Folder Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1920, -40]
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "operation": "create",
+        "name": "={{ $('Normalize Payload').item.json.userFolderName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Set Root Id').item.json.rootFolderId }}"
+        },
+        "options": {}
+      },
+      "id": "create-user-folder",
+      "name": "Create User Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [2160, 80],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "userFolderId",
+              "name": "userFolderId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "set-user-folder-id",
+      "name": "Set User Folder Id",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [2400, -40]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "={{ \"name = '\" + $('Normalize Payload').item.json.fileName.replace(/'/g, \"\\\\'\") + \"' and '\" + $json.userFolderId + \"' in parents and trashed = false\" }}",
+        "filter": {
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": ["id", "name"]
+        }
+      },
+      "id": "search-file",
+      "name": "Search Existing File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [2640, -40],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $('Normalize Payload').item.json;\nconst existing = items.filter(i => i.json && i.json.id);\nconst content = typeof payload.data === 'string' ? payload.data : JSON.stringify(payload.data, null, 2);\nconst filePath = `${payload.folderName}/${payload.userFolderName}/${payload.fileName}`;\nconst binary = {\n  content: await this.helpers.prepareBinaryData(Buffer.from(content, 'utf8'), payload.fileName, 'application/json')\n};\nreturn [{\n  json: {\n    userFolderId: $('Set User Folder Id').item.json.userFolderId,\n    fileName: payload.fileName,\n    folderName: payload.folderName,\n    userFolderName: payload.userFolderName,\n    filePath,\n    existingFileId: existing[0]?.json?.id || null,\n    content,\n    uid: payload.uid,\n    email: payload.email\n  },\n  binary\n}];"
+      },
+      "id": "prepare-upload",
+      "name": "Prepare Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2880, -40]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.existingFileId }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "if-file-exists",
+      "name": "File Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [3120, -40]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.existingFileId }}"
+        },
+        "changeFileContent": true,
+        "inputDataFieldName": "content",
+        "options": {}
+      },
+      "id": "update-file",
+      "name": "Update JSON File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [3360, -140],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "createFromText",
+        "content": "={{ $json.content }}",
+        "name": "={{ $json.fileName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.userFolderId }}"
+        },
+        "options": {}
+      },
+      "id": "create-file",
+      "name": "Create JSON File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [3360, 80],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { code: 200, message: 'success' } }}",
+        "options": {}
+      },
+      "id": "respond-ok",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [3600, -40]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { code: 400, message: 'Missing uid in request body' } }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "respond-bad",
+      "name": "Respond Bad Request",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [480, 160]
+    }
+  ],
+  "connections": {
+    "Webhook Export": {
+      "main": [[{ "node": "Has UID?", "type": "main", "index": 0 }]]
+    },
+    "Has UID?": {
+      "main": [
+        [{ "node": "Normalize Payload", "type": "main", "index": 0 }],
+        [{ "node": "Respond Bad Request", "type": "main", "index": 0 }]
+      ]
+    },
+    "Normalize Payload": {
+      "main": [[{ "node": "Search Root Folder", "type": "main", "index": 0 }]]
+    },
+    "Search Root Folder": {
+      "main": [[{ "node": "Root Exists?", "type": "main", "index": 0 }]]
+    },
+    "Root Exists?": {
+      "main": [
+        [{ "node": "Set Root Id", "type": "main", "index": 0 }],
+        [{ "node": "Create Root Folder", "type": "main", "index": 0 }]
+      ]
+    },
+    "Create Root Folder": {
+      "main": [[{ "node": "Set Root Id", "type": "main", "index": 0 }]]
+    },
+    "Set Root Id": {
+      "main": [[{ "node": "Search User Folder", "type": "main", "index": 0 }]]
+    },
+    "Search User Folder": {
+      "main": [[{ "node": "User Folder Exists?", "type": "main", "index": 0 }]]
+    },
+    "User Folder Exists?": {
+      "main": [
+        [{ "node": "Set User Folder Id", "type": "main", "index": 0 }],
+        [{ "node": "Create User Folder", "type": "main", "index": 0 }]
+      ]
+    },
+    "Create User Folder": {
+      "main": [[{ "node": "Set User Folder Id", "type": "main", "index": 0 }]]
+    },
+    "Set User Folder Id": {
+      "main": [[{ "node": "Search Existing File", "type": "main", "index": 0 }]]
+    },
+    "Search Existing File": {
+      "main": [[{ "node": "Prepare Upload", "type": "main", "index": 0 }]]
+    },
+    "Prepare Upload": {
+      "main": [[{ "node": "File Exists?", "type": "main", "index": 0 }]]
+    },
+    "File Exists?": {
+      "main": [
+        [{ "node": "Update JSON File", "type": "main", "index": 0 }],
+        [{ "node": "Create JSON File", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update JSON File": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    },
+    "Create JSON File": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

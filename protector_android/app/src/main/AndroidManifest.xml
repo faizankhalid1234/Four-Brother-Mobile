@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@android:drawable/ic_menu_manage"
+        android:label="@string/app_name"
         android:resizeableActivity="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ProtectorApp">
+        android:theme="@style/Theme.FineTrade"
+        android:usesCleartextTraffic="false">
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -16,10 +21,22 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <activity
             android:name=".FormActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".AuthActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".BackupActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

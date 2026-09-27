@@ -8,8 +8,8 @@
     <color name="muted">#64748B</color>
     <color name="card_stroke">#DCE5EE</color>
     <color name="teal_mid">#14B8A6</color>
-    <string name="app_name">FOUR BROTHERS</string>
-    <style name="Theme.ProtectorApp" parent="Theme.Material3.Light.NoActionBar">
+    <string name="app_name">Fine Trade</string>
+    <style name="Theme.FineTrade" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/teal</item>
         <item name="colorPrimaryContainer">@color/teal_soft</item>
         <item name="colorOnPrimary">@android:color/white</item>

@@ -1,0 +1,6 @@
+# Copy to key.properties (gitignored) and fill in real values.
+# Do not commit key.properties or the .jks file.
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=fine_trade
+storeFile=keystore/fine-trade-release.jks

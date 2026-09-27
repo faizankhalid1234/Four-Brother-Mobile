@@ -1,0 +1,333 @@
+{
+  "name": "Fine Trade — Drive Import",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "protector-utility-import",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-import",
+      "name": "Webhook Import",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "protector-utility-import"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "uid",
+              "name": "uid",
+              "value": "={{ $json.body.uid || $json.uid }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{ $json.body.email || $json.email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "folderName",
+              "name": "folderName",
+              "value": "={{ $json.body.folderName || $json.folderName || 'Fine Trade' }}",
+              "type": "string"
+            },
+            {
+              "id": "fileName",
+              "name": "fileName",
+              "value": "={{ $json.body.fileName || $json.fileName || 'fine_trade_data.json' }}",
+              "type": "string"
+            },
+            {
+              "id": "userFolderName",
+              "name": "userFolderName",
+              "value": "={{ ($json.body.email || $json.email || 'user').toString().trim().toLowerCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "normalize-import",
+      "name": "Normalize Import",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "={{ \"name = '\" + $json.folderName.replace(/'/g, \"\\\\'\") + \"' and mimeType = 'application/vnd.google-apps.folder' and trashed = false\" }}",
+        "filter": {
+          "whatToSearch": "folders"
+        },
+        "options": {
+          "fields": ["id", "name"]
+        }
+      },
+      "id": "search-root",
+      "name": "Find Root Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [480, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!items.length || !items[0].json?.id) {\n  return [{ json: { ok: false, error: 'Root folder Fine Trade not found. Export first.' } }];\n}\nconst rootId = items[0].json.id;\nconst p = $('Normalize Import').item.json;\nreturn [{ json: { ...p, rootFolderId: rootId } }];"
+      },
+      "id": "check-root",
+      "name": "Check Root",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.ok === false }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-missing-root",
+      "name": "Missing Root?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [960, 0]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "={{ \"name = '\" + $json.userFolderName.replace(/'/g, \"\\\\'\") + \"' and mimeType = 'application/vnd.google-apps.folder' and '\" + $json.rootFolderId + \"' in parents and trashed = false\" }}",
+        "filter": {
+          "whatToSearch": "folders"
+        },
+        "options": {
+          "fields": ["id", "name"]
+        }
+      },
+      "id": "find-user-folder",
+      "name": "Find User Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1200, -80],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $('Check Root').item.json;\nif (!items.length || !items[0].json?.id) {\n  return [{ json: { ok: false, error: 'User folder not found for this account. Export first.' } }];\n}\nreturn [{ json: { ...p, userFolderId: items[0].json.id } }];"
+      },
+      "id": "check-user",
+      "name": "Check User Folder",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1440, -80]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.ok === false }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-missing-user",
+      "name": "Missing User?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1680, -80]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "={{ \"name = '\" + $json.fileName.replace(/'/g, \"\\\\'\") + \"' and '\" + $json.userFolderId + \"' in parents and trashed = false\" }}",
+        "filter": {
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": ["id", "name"]
+        }
+      },
+      "id": "find-file",
+      "name": "Find JSON File",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1920, -160],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!items.length || !items[0].json?.id) {\n  return [{ json: { ok: false, error: 'fine_trade_data.json not found. Export first.' } }];\n}\nreturn [{ json: { fileId: items[0].json.id } }];"
+      },
+      "id": "check-file",
+      "name": "Check File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2160, -160]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.ok === false }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-missing-file",
+      "name": "Missing File?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [2400, -160]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.fileId }}"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "id": "download-file",
+      "name": "Download JSON",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [2640, -240],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "REPLACE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = '';\ntry {\n  const buf = await this.helpers.getBinaryDataBuffer(0, 'data');\n  text = buf.toString('utf8');\n} catch (e) {\n  const bin = items[0].binary?.data;\n  if (!bin) {\n    return [{ json: { ok: false, error: 'Empty file from Drive' } }];\n  }\n  if (typeof bin.data === 'string' && bin.data.length) {\n    text = Buffer.from(bin.data, 'base64').toString('utf8');\n  } else {\n    return [{ json: { ok: false, error: 'Empty file from Drive' } }];\n  }\n}\ntext = (text || '').replace(/^\\uFEFF/, '').trim();\nif (!text) {\n  return [{ json: { ok: false, error: 'Empty file from Drive' } }];\n}\nlet data;\ntry { data = JSON.parse(text); } catch (e) {\n  return [{ json: { ok: false, error: 'Invalid JSON in Drive file', detail: String(e.message || e) } }];\n}\nreturn [{ json: { ok: true, fileName: items[0].binary?.data?.fileName || 'fine_trade_data.json', data } }];"
+      },
+      "id": "parse-json",
+      "name": "Parse JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2880, -240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "respond-data",
+      "name": "Respond Data",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [3120, -240]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "id": "respond-error",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1200, 160]
+    }
+  ],
+  "connections": {
+    "Webhook Import": {
+      "main": [[{ "node": "Normalize Import", "type": "main", "index": 0 }]]
+    },
+    "Normalize Import": {
+      "main": [[{ "node": "Find Root Folder", "type": "main", "index": 0 }]]
+    },
+    "Find Root Folder": {
+      "main": [[{ "node": "Check Root", "type": "main", "index": 0 }]]
+    },
+    "Check Root": {
+      "main": [[{ "node": "Missing Root?", "type": "main", "index": 0 }]]
+    },
+    "Missing Root?": {
+      "main": [
+        [{ "node": "Respond Error", "type": "main", "index": 0 }],
+        [{ "node": "Find User Folder", "type": "main", "index": 0 }]
+      ]
+    },
+    "Find User Folder": {
+      "main": [[{ "node": "Check User Folder", "type": "main", "index": 0 }]]
+    },
+    "Check User Folder": {
+      "main": [[{ "node": "Missing User?", "type": "main", "index": 0 }]]
+    },
+    "Missing User?": {
+      "main": [
+        [{ "node": "Respond Error", "type": "main", "index": 0 }],
+        [{ "node": "Find JSON File", "type": "main", "index": 0 }]
+      ]
+    },
+    "Find JSON File": {
+      "main": [[{ "node": "Check File", "type": "main", "index": 0 }]]
+    },
+    "Check File": {
+      "main": [[{ "node": "Missing File?", "type": "main", "index": 0 }]]
+    },
+    "Missing File?": {
+      "main": [
+        [{ "node": "Respond Error", "type": "main", "index": 0 }],
+        [{ "node": "Download JSON", "type": "main", "index": 0 }]
+      ]
+    },
+    "Download JSON": {
+      "main": [[{ "node": "Parse JSON", "type": "main", "index": 0 }]]
+    },
+    "Parse JSON": {
+      "main": [[{ "node": "Respond Data", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

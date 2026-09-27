@@ -1,11 +1,11 @@
-# FOUR BROTHERS
+# ProtectorUtility
 
 Mobile protector stock management app for Android.
 
 ## App
 
-- **Brand:** FOUR BROTHERS
-- **Package:** `com.fourbrothers.protector`
+- **Brand:** ProtectorUtility
+- **Package:** `com.protector.utility`
 - **Active project:** `protector_android` (native Kotlin / Material 3)
 
 ## Features
@@ -15,7 +15,8 @@ Mobile protector stock management app for Android.
 - Home search with filter chips (Both / Protector / Mobile model)
 - Styled search suggestions
 - Share designed protector card image + caption (WhatsApp, Instagram, Facebook, etc.)
-- Local storage via SharedPreferences
+- Local JSON storage on phone (`protector_utility_data.json`)
+- Firebase login/signup + manual Google Drive import/export via n8n (see `CLOUD_BACKUP.md`)
 
 ## Build
 

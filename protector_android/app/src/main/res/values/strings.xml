@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Firebase Console → Project settings → Your apps → Web client ID
+      (also appears in google-services.json as oauth_client client_type 3 after enabling Google Sign-In + SHA-1).
+    -->
+    <string name="google_web_client_id" translatable="false">1030137719453-9u5v93f1vbov355vgpbhssn044i0r1jf.apps.googleusercontent.com</string>
+</resources>

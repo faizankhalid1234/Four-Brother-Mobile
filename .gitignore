@@ -35,14 +35,8 @@ Thumbs.db
 # Secrets / private local-only (NEVER publish)
 .env
 *.pem
+key.properties
+**/key.properties
 *.keystore
 *.jks
-RAKHNA.md
-RAKHNA.txt
-**/RAKHNA.*
-secrets/
-security/
-key.properties
-credentials.json
-google-services.json
-GoogleService-Info.plist
+keystore/
