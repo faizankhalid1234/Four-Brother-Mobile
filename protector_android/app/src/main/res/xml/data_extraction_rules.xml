@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="fine_trade_data.json" />
+        <exclude domain="sharedpref" path="fine_trade.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="fine_trade_data.json" />
+        <exclude domain="sharedpref" path="fine_trade.xml" />
+    </device-transfer>
+</data-extraction-rules>

@@ -1,0 +1,67 @@
+{
+  "name": "Fine Trade \u2014 Privacy Policy",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "fine-trade-privacy",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-privacy",
+      "name": "Webhook Privacy",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "fine-trade-privacy"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\"/>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>\n<title>Fine Trade Privacy Policy</title>\n<style>\n  :root { --ink:#0B1220; --muted:#64748B; --teal:#0F766E; --bg:#F4FBF9; --line:#DCE5EE; }\n  * { box-sizing: border-box; }\n  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; }\n  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }\n  h1 { color: var(--teal); margin: 0 0 8px; font-size: 1.75rem; }\n  h2 { margin-top: 28px; font-size: 1.15rem; }\n  .sub { color: var(--muted); margin-bottom: 28px; }\n  p, li { color: #1E293B; }\n  ul { padding-left: 1.2rem; }\n  .card { background:#fff; border:1px solid var(--line); border-radius: 16px; padding: 22px 20px; }\n  a { color: var(--teal); }\n  footer { margin-top: 28px; color: var(--muted); font-size: .9rem; }\n</style>\n</head>\n<body>\n  <main class=\"wrap\">\n    <h1>Fine Trade Privacy Policy</h1>\n    <p class=\"sub\">Last updated: 27 September 2026</p>\n    <div class=\"card\">\n      <p>Fine Trade (\u201cthe App\u201d) helps you manage protector stock and optional cloud backup. This policy explains what information we handle and why.</p>\n\n      <h2>1. Who we are</h2>\n      <p>Fine Trade is operated by the app publisher for business inventory use. Contact: <a href=\"mailto:muhammadumersheraz2000@gmail.com\">muhammadumersheraz2000@gmail.com</a>.</p>\n\n      <h2>2. Information we process</h2>\n      <ul>\n        <li><strong>Account data</strong> \u2014 email, display name, and authentication identifiers when you sign in with Google or email/password (via Firebase Authentication).</li>\n        <li><strong>App content you enter</strong> \u2014 protector names and compatible mobile models stored on your device.</li>\n        <li><strong>Backup data</strong> \u2014 if you choose Export to Google Drive, your stock JSON is sent through our automation (n8n) and stored in Google Drive under a folder named with your email.</li>\n        <li><strong>Technical data</strong> \u2014 standard HTTPS request logs may include IP address and timestamps while processing backup webhooks.</li>\n      </ul>\n\n      <h2>3. How we use information</h2>\n      <ul>\n        <li>To create and manage your account</li>\n        <li>To provide app features (search, share HTML stock table, local storage)</li>\n        <li>To perform manual cloud backup/restore when you request it</li>\n        <li>To secure the service and prevent abuse</li>\n      </ul>\n\n      <h2>4. Local storage</h2>\n      <p>Your day-to-day stock data is stored on your phone. We do not automatically upload it. Cloud backup only happens when you tap Export / Import.</p>\n\n      <h2>5. Sharing</h2>\n      <p>We use Google services for authentication (Firebase / Google Sign-In) and, when you export, Google Drive via our operator account\u2019s n8n integration. We do not sell your personal information.</p>\n\n      <h2>6. Retention</h2>\n      <p>Account data remains while your account exists. Drive backups remain until you delete them from Drive or request deletion. Local data remains until you clear app data or uninstall.</p>\n\n      <h2>7. Your choices</h2>\n      <ul>\n        <li>Use the app without signing in for local-only features</li>\n        <li>Skip Drive backup if you prefer local JSON export only</li>\n        <li>Request account or backup deletion by emailing us</li>\n      </ul>\n\n      <h2>8. Security</h2>\n      <p>Traffic to our services uses HTTPS. Keep your device and Google account secured. No method of transmission is 100% secure.</p>\n\n      <h2>9. Children\u2019s privacy</h2>\n      <p>The App is intended for business users and is not directed to children under 13.</p>\n\n      <h2>10. Changes</h2>\n      <p>We may update this policy. The \u201cLast updated\u201d date above will change when we do. Continued use of the App after updates means you accept the revised policy.</p>\n\n      <h2>11. Contact</h2>\n      <p>Questions or deletion requests: <a href=\"mailto:muhammadumersheraz2000@gmail.com\">muhammadumersheraz2000@gmail.com</a>.</p>\n    </div>\n    <footer>\u00a9 Fine Trade. All rights reserved.</footer>\n  </main>\n</body>\n</html>",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              },
+              {
+                "name": "Cache-Control",
+                "value": "public, max-age=3600"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-html",
+      "name": "Respond HTML",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        280,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Privacy": {
+      "main": [
+        [
+          {
+            "node": "Respond HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

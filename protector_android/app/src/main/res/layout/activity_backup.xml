@@ -172,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:minHeight="48dp"
-                    android:text="Share all data as HTML table"
+                    android:text="Share all data via WhatsApp"
                     android:textColor="@color/teal_dark"
                     app:strokeColor="@color/teal_dark" />
 

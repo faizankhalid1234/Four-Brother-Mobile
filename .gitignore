@@ -40,3 +40,6 @@ key.properties
 *.keystore
 *.jks
 keystore/
+**/google-services.json.bak
+protector_android/app/build.gradle.kts.bak
+protector_android/local.properties

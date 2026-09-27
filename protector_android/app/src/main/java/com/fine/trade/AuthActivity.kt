@@ -8,15 +8,20 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.fine.trade.databinding.ActivityAuthBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
-import com.fine.trade.databinding.ActivityAuthBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Account / Sign-up screen for logged-out users:
+ * Continue with Google + email sign-up form.
+ * Login is on [EmailAuthActivity].
+ */
 class AuthActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthBinding
     private val cloud = CloudSyncClient()
@@ -62,9 +67,11 @@ class AuthActivity : AppCompatActivity() {
             return
         }
 
-        binding.btnLogin.setOnClickListener { submit(signUp = false) }
-        binding.btnSignup.setOnClickListener { submit(signUp = true) }
         binding.btnGoogle.setOnClickListener { startGoogleSignIn() }
+        binding.btnSignup.setOnClickListener { submitSignup() }
+        binding.btnGoLogin.setOnClickListener {
+            startActivity(Intent(this, EmailAuthActivity::class.java))
+        }
     }
 
     private fun startGoogleSignIn() {
@@ -83,17 +90,20 @@ class AuthActivity : AppCompatActivity() {
             .requestProfile()
             .build()
         val client = GoogleSignIn.getClient(this, options)
-        // Force account picker so users can switch accounts
         client.signOut().addOnCompleteListener {
             googleSignInLauncher.launch(client.signInIntent)
         }
     }
 
-    private fun submit(signUp: Boolean) {
+    private fun submitSignup() {
         val name = binding.nameInput.text?.toString().orEmpty().trim()
         val email = binding.emailInput.text?.toString().orEmpty().trim()
         val password = binding.passwordInput.text?.toString().orEmpty()
 
+        if (name.length < 2) {
+            Toast.makeText(this, "Enter your full name", Toast.LENGTH_SHORT).show()
+            return
+        }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Enter a valid email", Toast.LENGTH_SHORT).show()
             return
@@ -102,28 +112,17 @@ class AuthActivity : AppCompatActivity() {
             Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
             return
         }
-        if (signUp && name.length < 2) {
-            Toast.makeText(this, "Enter your full name to sign up", Toast.LENGTH_SHORT).show()
-            return
-        }
 
         setLoading(true)
         lifecycleScope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    if (signUp) cloud.signUp(name, email, password)
-                    else cloud.signIn(email, password)
-                }
-                Toast.makeText(
-                    this@AuthActivity,
-                    if (signUp) "Account created" else "Logged in",
-                    Toast.LENGTH_SHORT
-                ).show()
+                withContext(Dispatchers.IO) { cloud.signUp(name, email, password) }
+                Toast.makeText(this@AuthActivity, "Account created", Toast.LENGTH_SHORT).show()
                 openBackup()
             } catch (e: Exception) {
                 Toast.makeText(
                     this@AuthActivity,
-                    e.message ?: "Auth failed",
+                    e.message ?: "Sign up failed",
                     Toast.LENGTH_LONG
                 ).show()
             } finally {
@@ -139,8 +138,8 @@ class AuthActivity : AppCompatActivity() {
 
     private fun setLoading(loading: Boolean) {
         binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.btnLogin.isEnabled = !loading
-        binding.btnSignup.isEnabled = !loading
         binding.btnGoogle.isEnabled = !loading
+        binding.btnSignup.isEnabled = !loading
+        binding.btnGoLogin.isEnabled = !loading
     }
 }

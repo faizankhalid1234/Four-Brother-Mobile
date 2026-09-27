@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Exclude local business data from cloud backup auto-sync -->
+    <exclude domain="file" path="fine_trade_data.json" />
+    <exclude domain="sharedpref" path="fine_trade.xml" />
+</full-backup-content>

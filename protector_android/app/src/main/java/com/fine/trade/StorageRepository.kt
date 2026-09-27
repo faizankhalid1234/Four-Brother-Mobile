@@ -329,22 +329,15 @@ class StorageRepository(context: Context) {
     }
 
     fun shareText(p: Protector): String {
-        val models = p.mobileModels.mapIndexed { i, m -> "  ${i + 1}. $m" }.joinToString("\n")
+        val models = p.mobileModels.joinToString(", ").ifBlank { "-" }
         return buildString {
-            appendLine("━━━━━━━━━━━━━━━━━━━━")
-            appendLine("  Fine Trade")
-            appendLine("  PROTECTOR CARD")
-            appendLine("━━━━━━━━━━━━━━━━━━━━")
+            appendLine("*Fine Trade — Protector*")
             appendLine()
-            appendLine("Protector")
-            appendLine(p.protectorName)
+            appendLine("*${p.protectorName}*")
+            appendLine("Models: $models")
             appendLine()
-            appendLine("Fits these mobile models")
-            appendLine(models.ifBlank { "  - Not set" })
-            appendLine()
-            appendLine("━━━━━━━━━━━━━━━━━━━━")
-            appendLine("Shared from Fine Trade")
-        }
+            appendLine("_Shared from Fine Trade_")
+        }.trimEnd()
     }
 
     private fun normalizeModels(models: List<String>): List<String> {

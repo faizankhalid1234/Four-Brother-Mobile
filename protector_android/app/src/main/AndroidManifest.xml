@@ -5,8 +5,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:resizeableActivity="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.FineTrade"
@@ -29,6 +33,11 @@
 
         <activity
             android:name=".AuthActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".EmailAuthActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 

@@ -18,79 +18,21 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:title="Create account"
+            app:title="Log in"
             app:titleTextColor="@color/ink" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Sign up to sync backups with Google Drive."
+            android:text="Log in with your email and password."
             android:textColor="@color/muted"
             android:textSize="14sp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGoogle"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_google_button"
-            android:elevation="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:letterSpacing="0.01"
-            android:stateListAnimator="@null"
-            android:text="Continue with Google"
-            android:textAllCaps="false"
-            android:textColor="#3C4043"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:backgroundTint="@null"
-            app:cornerRadius="12dp"
-            app:icon="@drawable/ic_google_logo"
-            app:iconGravity="textStart"
-            app:iconPadding="12dp"
-            app:iconSize="20dp"
-            app:iconTint="@null"
-            app:rippleColor="#1F000000"
-            app:strokeColor="@android:color/transparent"
-            app:strokeWidth="0dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/card_stroke" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:text="or sign up with email"
-                android:textAllCaps="true"
-                android:textColor="@color/muted"
-                android:textSize="11sp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/card_stroke" />
-        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="18dp"
             app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="16dp"
             app:strokeColor="@color/card_stroke"
@@ -103,24 +45,8 @@
                 android:padding="16dp">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/nameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full name"
-                    app:boxBackgroundColor="@color/teal_soft">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/nameInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName|textCapWords"
-                        android:minHeight="48dp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     android:hint="Email"
                     app:boxBackgroundColor="@color/teal_soft">
 
@@ -157,24 +83,24 @@
                     android:textSize="12sp" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSignup"
+                    android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:minHeight="48dp"
-                    android:text="Sign up"
+                    android:text="Log in"
                     app:backgroundTint="@color/teal" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGoLogin"
+            android:id="@+id/btnGoSignup"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:minHeight="48dp"
-            android:text="Already have an account? Log in"
+            android:text="Need an account? Sign up"
             android:textColor="@color/teal" />
 
         <ProgressBar
