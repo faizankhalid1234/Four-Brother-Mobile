@@ -14,14 +14,14 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.fine.trade"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.fine.trade"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 5
-        versionName = "1.4.0"
+        targetSdk = 36
+        versionCode = 6
+        versionName = "1.4.1"
     }
 
     signingConfigs {

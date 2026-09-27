@@ -1,13 +1,17 @@
 # Fine Trade — Play Store production checklist
 
 App ID: `com.fine.trade`  
-Current release: **1.4.0 (versionCode 5)**
+Current release: **1.4.1 (versionCode 6)** · targetSdk **36**
 
 ## 1. Before you upload
 
 1. Confirm Firebase Android app package is `com.fine.trade`.
-2. In Firebase → Project settings → Your apps → add **Play App Signing** SHA-1 / SHA-256 (from Play Console after first upload) **and** your upload keystore SHA-1.
-3. Re-download `google-services.json` if SHA / OAuth clients changed.
+2. In Firebase → Project settings → Your apps → add **both**:
+   - Upload keystore SHA-1 / SHA-256 (from `keytool` / local release keystore)
+   - **Play App Signing** SHA-1 / SHA-256 from Play Console → Setup → App signing
+     (production installs use this key — missing it causes Google Sign-In toast `10:`)
+3. After adding SHA values, re-download `google-services.json` and replace
+   `protector_android/app/google-services.json`, then rebuild the AAB.
 4. Privacy policy (already hosted on n8n):
    - URL: `https://muhammadumersheraz2000.socioglory.com/webhook/fine-trade-privacy`
    - App string: `privacy_policy_url` in `strings.xml`

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1030137719453",
+    "firebase_url": "https://protectorutility-default-rtdb.firebaseio.com",
     "project_id": "protectorutility",
     "storage_bucket": "protectorutility.firebasestorage.app"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1030137719453-mn1an5g2ip09cgg6i6dr2t43de4solfd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fine.trade",
+            "certificate_hash": "3676107a4931795b762e414c73bf9bc06927b746"
+          }
+        },
         {
           "client_id": "1030137719453-u2ij655dioisn9pq5f8jo3og1d90abhh.apps.googleusercontent.com",
           "client_type": 1,

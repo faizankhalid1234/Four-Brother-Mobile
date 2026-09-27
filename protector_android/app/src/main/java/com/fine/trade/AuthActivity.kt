@@ -46,12 +46,30 @@ class AuthActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Toast.makeText(
                     this@AuthActivity,
-                    e.message ?: "Google sign-in failed",
+                    googleSignInErrorMessage(e),
                     Toast.LENGTH_LONG
                 ).show()
             } finally {
                 setLoading(false)
             }
+        }
+    }
+
+    private fun googleSignInErrorMessage(e: Exception): String {
+        val api = e as? ApiException
+            ?: (e.cause as? ApiException)
+        val code = api?.statusCode
+        return when (code) {
+            10 -> // CommonStatusCodes.DEVELOPER_ERROR
+                "Google Sign-In misconfigured (error 10). " +
+                    "Add Play App Signing SHA-1 in Firebase, then re-download google-services.json."
+            12501 -> // SIGN_IN_CANCELLED
+                "Google Sign-In cancelled"
+            7 -> // NETWORK_ERROR
+                "Network error. Check your internet and try again."
+            null -> e.message?.takeIf { it.isNotBlank() && it != "10:" }
+                ?: "Google sign-in failed"
+            else -> "Google sign-in failed (error $code)"
         }
     }
 
