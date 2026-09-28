@@ -18,10 +18,14 @@ android {
 
     defaultConfig {
         applicationId = "com.fine.trade"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.4.2"
+        versionCode = 10
+        versionName = "1.5.2"
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     signingConfigs {

@@ -50,15 +50,12 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/versionLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Protector Management"
-                        android:textColor="@android:color/white"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="4dp"
+                        android:textColor="#9FE8DF"
+                        android:textSize="11sp" />
                 </LinearLayout>
 
                 <TextView
@@ -111,16 +108,6 @@
                     app:backgroundTint="#33FFFFFF"
                     app:cornerRadius="18dp" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="Phone JSON • Search • Drive backup (login)"
-                android:textColor="#B7E4DF"
-                android:textSize="13sp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/filterGroup"

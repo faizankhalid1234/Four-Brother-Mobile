@@ -19,6 +19,7 @@ class EmailAuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UiCompat.setupActivityWindow(this)
         binding = ActivityEmailAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

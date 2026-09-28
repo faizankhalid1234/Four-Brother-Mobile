@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        UiCompat.setupActivityWindow(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -74,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         setupSearch()
         applySafeInsets()
         updateSearchHint()
+        binding.versionLabel.text = UiCompat.appVersionText(this)
     }
 
     private fun setupSearch() {

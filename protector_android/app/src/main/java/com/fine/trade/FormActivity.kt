@@ -7,7 +7,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import com.fine.trade.databinding.ActivityFormBinding
 
 class FormActivity : AppCompatActivity() {
@@ -19,7 +18,7 @@ class FormActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, true)
+        UiCompat.setupActivityWindow(this)
         binding = ActivityFormBinding.inflate(layoutInflater)
         setContentView(binding.root)
         repo = StorageRepository(this)

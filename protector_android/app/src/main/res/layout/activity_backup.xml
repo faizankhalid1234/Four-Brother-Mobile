@@ -38,6 +38,14 @@
             android:textColor="@color/muted"
             android:textSize="12sp" />
 
+        <TextView
+            android:id="@+id/versionLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/muted"
+            android:textSize="12sp" />
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,16 +91,15 @@
                         android:text="Export to Google Drive"
                         app:backgroundTint="@color/teal" />
 
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                    <ProgressBar
                         android:id="@+id/exportDriveProgress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:layout_gravity="center"
                         android:indeterminate="true"
-                        android:visibility="gone"
-                        app:indicatorColor="@android:color/white"
-                        app:indicatorSize="24dp"
-                        app:trackThickness="3dp" />
+                        android:indeterminateTint="@android:color/white"
+                        android:visibility="gone" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -111,16 +118,15 @@
                         android:textColor="@color/teal"
                         app:strokeColor="@color/teal" />
 
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                    <ProgressBar
                         android:id="@+id/importDriveProgress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:layout_gravity="center"
                         android:indeterminate="true"
-                        android:visibility="gone"
-                        app:indicatorColor="@color/teal"
-                        app:indicatorSize="24dp"
-                        app:trackThickness="3dp" />
+                        android:indeterminateTint="@color/teal"
+                        android:visibility="gone" />
                 </FrameLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

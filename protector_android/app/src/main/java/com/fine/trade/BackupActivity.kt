@@ -30,11 +30,20 @@ class BackupActivity : AppCompatActivity() {
         ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         if (uri == null) return@registerForActivityResult
+        try {
+            contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        } catch (_: SecurityException) {
+            // Some providers do not support persistable grants; openInputStream still works.
+        }
         importLocalUri(uri)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UiCompat.setupActivityWindow(this)
         binding = ActivityBackupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         repo = StorageRepository(this)
@@ -81,6 +90,7 @@ class BackupActivity : AppCompatActivity() {
         }
         binding.accountStatus.text = "Signed in as ${cloud.displayLabel()}"
         binding.storageHint.text = repo.storageLocationHint()
+        binding.versionLabel.text = UiCompat.appVersionText(this)
     }
 
     private enum class BusyAction { NONE, EXPORT_DRIVE, IMPORT_DRIVE, OTHER }

@@ -1,7 +1,7 @@
 # Fine Trade — Play Store production checklist
 
 App ID: `com.fine.trade`  
-Current release: **1.4.2 (versionCode 7)** · targetSdk **36**
+Current release: **1.5.2 (versionCode 10)** · minSdk **26** · targetSdk **36**
 
 ## 1. Before you upload
 
