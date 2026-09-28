@@ -17,7 +17,10 @@ Current release: **1.5.4 (versionCode 12)** · minSdk **26** · targetSdk **36**
    - App string: `privacy_policy_url` in `strings.xml`
    - Paste the same URL in Play Console → App content → Privacy policy
    - Workflow JSON: `n8n/fine-trade-privacy-policy.json`
-5. Confirm n8n webhooks in Firebase RTDB `config/`:
+5. Account deletion URL (Play Data safety / Account deletion):
+   - URL: `https://muhammadumersheraz2000.socioglory.com/webhook/fine-trade-delete-account`
+   - Workflow JSON: `n8n/fine-trade-delete-account.json`
+6. Confirm n8n webhooks in Firebase RTDB `config/`:
    - `n8n_export_url`
    - `n8n_import_url`
 

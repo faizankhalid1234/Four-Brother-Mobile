@@ -10,4 +10,6 @@
 
     <!-- Play Console → App content → Privacy policy -->
     <string name="privacy_policy_url" translatable="false">https://muhammadumersheraz2000.socioglory.com/webhook/fine-trade-privacy</string>
+    <!-- Play Console → App content → Account deletion -->
+    <string name="delete_account_url" translatable="false">https://muhammadumersheraz2000.socioglory.com/webhook/fine-trade-delete-account</string>
 </resources>
