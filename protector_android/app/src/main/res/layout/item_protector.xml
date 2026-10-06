@@ -94,16 +94,15 @@
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/models"
+            <GridLayout
+                android:id="@+id/modelsGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
+                android:alignmentMode="alignBounds"
                 android:background="@drawable/bg_models_panel"
-                android:lineSpacingExtra="3dp"
-                android:padding="12dp"
-                android:textColor="@color/teal_dark"
-                android:textSize="14sp" />
+                android:columnCount="2"
+                android:padding="12dp" />
 
             <View
                 android:layout_width="match_parent"

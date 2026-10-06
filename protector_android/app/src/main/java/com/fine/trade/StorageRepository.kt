@@ -344,7 +344,7 @@ class StorageRepository(context: Context) {
         val cleaned = mutableListOf<String>()
         val seen = mutableSetOf<String>()
         models.forEach { raw ->
-            val name = raw.trim()
+            val name = raw.trim().replace(Regex("\\s+"), " ")
             if (name.isEmpty()) return@forEach
             val key = name.lowercase()
             require(key !in seen) { "Duplicate mobile model: $name" }
