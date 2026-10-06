@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fine Trade</string>
+    <string name="expand_card">Show phone models</string>
+    <string name="collapse_card">Hide phone models</string>
 
     <!--
       Firebase Console → Project settings → Your apps → Web client ID
