@@ -1,0 +1,84 @@
+name: Play Store Internal Testing
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - "protector_android/**"
+      - ".github/workflows/play-internal.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: play-internal-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-internal:
+    name: Build & upload AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: protector_android
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+          cache-dependency-path: protector_android/**/build.gradle.kts
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          # Do not install legacy "tools" — Google removed it (sdkmanager fails).
+          packages: platform-tools
+
+      - name: Decode release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Missing secret ANDROID_KEYSTORE_BASE64"
+            exit 1
+          fi
+          mkdir -p keystore
+          echo "$KEYSTORE_BASE64" | base64 --decode > keystore/fine-trade-release.jks
+
+      - name: Write key.properties
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          if [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "Missing ANDROID_KEYSTORE_PASSWORD or ANDROID_KEY_PASSWORD"
+            exit 1
+          fi
+          {
+            echo "storePassword=${STORE_PASSWORD}"
+            echo "keyPassword=${KEY_PASSWORD}"
+            echo "keyAlias=${KEY_ALIAS:-fine_trade}"
+            echo "storeFile=keystore/fine-trade-release.jks"
+          } > key.properties
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build release AAB
+        run: ./gradlew --no-daemon clean bundleRelease
+
+      - name: Upload to Play Internal testing
+        uses: r0adkll/upload-google-play@v1.1.3
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.fine.trade
+          releaseFiles: protector_android/app/build/outputs/bundle/release/app-release.aab
+          track: internal
+          status: completed
+          changesNotSentForReview: true

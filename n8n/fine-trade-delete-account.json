@@ -1,0 +1,61 @@
+{
+  "name": "Fine Trade — Delete Account",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "fine-trade-delete-account",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-delete-account",
+      "name": "Webhook Delete Account",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "fine-trade-delete-account"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\"/>\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>\n<title>Fine Trade — Delete Account</title>\n<style>\n  :root { --ink:#0B1220; --muted:#64748B; --teal:#0F766E; --bg:#F4FBF9; --line:#DCE5EE; }\n  * { box-sizing: border-box; }\n  body { margin:0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; }\n  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }\n  h1 { color: var(--teal); margin: 0 0 8px; font-size: 1.75rem; }\n  h2 { margin-top: 28px; font-size: 1.15rem; }\n  .sub { color: var(--muted); margin-bottom: 28px; }\n  p, li { color: #1E293B; }\n  ul { padding-left: 1.2rem; }\n  .card { background:#fff; border:1px solid var(--line); border-radius: 16px; padding: 22px 20px; }\n  .steps { background:#E6F5F3; border:1px solid #B7E4DF; border-radius: 12px; padding: 16px 18px; margin: 16px 0; }\n  a { color: var(--teal); }\n  footer { margin-top: 28px; color: var(--muted); font-size: .9rem; }\n</style>\n</head>\n<body>\n  <main class=\"wrap\">\n    <h1>Fine Trade — Delete Account</h1>\n    <p class=\"sub\">Request deletion of your Fine Trade account and associated data</p>\n    <div class=\"card\">\n      <p><strong>Fine Trade</strong> (Android app) lets you manage protector stock and optional Google Drive backup. Use this page to request that your account and related data are deleted.</p>\n\n      <h2>How to request account deletion</h2>\n      <div class=\"steps\">\n        <ol>\n          <li>Send an email to <a href=\"mailto:muhammadumersheraz2000@gmail.com?subject=Delete%20Fine%20Trade%20account\">muhammadumersheraz2000@gmail.com</a></li>\n          <li>Use the subject line: <strong>Delete Fine Trade account</strong></li>\n          <li>Include the <strong>email address</strong> used to sign in to Fine Trade (Google or email/password)</li>\n          <li>Optionally write: “Please delete my Fine Trade account and associated data.”</li>\n        </ol>\n      </div>\n      <p>We will verify ownership of the account and process your request.</p>\n\n      <h2>What data is deleted</h2>\n      <ul>\n        <li>Your Fine Trade <strong>Firebase Authentication</strong> account (email, display name, auth identifiers)</li>\n        <li>Your Fine Trade <strong>Google Drive backup</strong> folder/files created under our operator Drive (Fine Trade / your email), when a backup exists</li>\n      </ul>\n\n      <h2>What data may be kept</h2>\n      <ul>\n        <li><strong>Data on your phone</strong> (local stock JSON) remains until you clear Fine Trade app data or uninstall the app</li>\n        <li>Short-lived <strong>technical logs</strong> (e.g. HTTPS timestamps) may be retained briefly for security, then removed in normal log rotation</li>\n      </ul>\n\n      <h2>Retention period</h2>\n      <p>We aim to complete account and cloud backup deletion within <strong>30 days</strong> of a verified request. You will receive a confirmation email when deletion is finished.</p>\n\n      <h2>Delete some data without deleting your account</h2>\n      <p>Inside the Fine Trade app you can delete individual protectors (and their linked models on that record) at any time. That does not delete your login account.</p>\n\n      <h2>Contact</h2>\n      <p>Questions: <a href=\"mailto:muhammadumersheraz2000@gmail.com\">muhammadumersheraz2000@gmail.com</a></p>\n      <p>Privacy policy: <a href=\"https://muhammadumersheraz2000.socioglory.com/webhook/fine-trade-privacy\">Fine Trade Privacy Policy</a></p>\n    </div>\n    <footer>© Fine Trade. All rights reserved.</footer>\n  </main>\n</body>\n</html>",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              },
+              {
+                "name": "Cache-Control",
+                "value": "public, max-age=3600"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-html",
+      "name": "Respond HTML",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [280, 0]
+    }
+  ],
+  "connections": {
+    "Webhook Delete Account": {
+      "main": [
+        [
+          {
+            "node": "Respond HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

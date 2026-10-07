@@ -20,8 +20,8 @@ android {
         applicationId = "com.fine.trade"
         minSdk = 26
         targetSdk = 36
-        versionCode = 10
-        versionName = "1.5.2"
+        versionCode = 12
+        versionName = "1.5.4"
 
         vectorDrawables {
             useSupportLibrary = true

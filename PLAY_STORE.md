@@ -1,7 +1,7 @@
 # Fine Trade — Play Store production checklist
 
 App ID: `com.fine.trade`  
-Current release: **1.5.2 (versionCode 10)** · minSdk **26** · targetSdk **36**
+Current release: **1.5.4 (versionCode 12)** · minSdk **26** · targetSdk **36**
 
 ## 1. Before you upload
 
@@ -17,7 +17,10 @@ Current release: **1.5.2 (versionCode 10)** · minSdk **26** · targetSdk **36**
    - App string: `privacy_policy_url` in `strings.xml`
    - Paste the same URL in Play Console → App content → Privacy policy
    - Workflow JSON: `n8n/fine-trade-privacy-policy.json`
-5. Confirm n8n webhooks in Firebase RTDB `config/`:
+5. Account deletion URL (Play Data safety / Account deletion):
+   - URL: `https://muhammadumersheraz2000.socioglory.com/webhook/fine-trade-delete-account`
+   - Workflow JSON: `n8n/fine-trade-delete-account.json`
+6. Confirm n8n webhooks in Firebase RTDB `config/`:
    - `n8n_export_url`
    - `n8n_import_url`
 
@@ -94,3 +97,45 @@ Graphics you still need to create in Play Console:
 ## 8. Upload
 
 Play Console → Production (or Internal testing first) → Create release → upload `app-release.aab` → review → roll out.
+
+## 9. Auto-upload on `dev` (GitHub Actions → Internal testing)
+
+Pushing to **`dev`** (when `protector_android/**` changes) builds a signed AAB and uploads it to **Play Console → Testing → Internal testing**.
+
+### One-time Play Console + Google Cloud setup
+
+1. Create a Google Cloud service account (or reuse one).
+2. Enable **Google Play Android Developer API** for that GCP project.
+3. Create a JSON key for the service account.
+4. In Play Console → **Users and permissions** → Invite users → paste the service account email.
+5. Grant at least:
+   - **View app information**
+   - **Release apps to testing tracks**
+   - **Manage testing tracks and edit tester lists** (recommended)
+6. Accept the invite / ensure the user is active on the app `com.fine.trade`.
+7. Manually upload **at least one** AAB to Internal testing once (if the app is still a draft), so API uploads with `status: completed` work.
+
+### GitHub secrets (repo → Settings → Secrets and variables → Actions)
+
+| Secret | Value |
+|--------|--------|
+| `PLAY_SERVICE_ACCOUNT_JSON` | Full contents of the service-account `.json` key file |
+| `ANDROID_KEYSTORE_BASE64` | Base64 of `protector_android/keystore/fine-trade-release.jks` |
+| `ANDROID_KEYSTORE_PASSWORD` | `storePassword` from `key.properties` |
+| `ANDROID_KEY_PASSWORD` | `keyPassword` from `key.properties` |
+| `ANDROID_KEY_ALIAS` | Usually `fine_trade` |
+
+Encode the keystore on your Mac:
+
+```bash
+base64 -i protector_android/keystore/fine-trade-release.jks | pbcopy
+```
+
+Paste into `ANDROID_KEYSTORE_BASE64`.
+
+### Notes
+
+- Bump `versionCode` / `versionName` in `app/build.gradle.kts` **before** each push (Play rejects duplicate version codes).
+- Workflow file: `.github/workflows/play-internal.yml`
+- Manual run: Actions → **Play Store Internal Testing** → Run workflow
+- If upload fails with draft/review errors, finish Play listing / first internal release manually, then re-run
